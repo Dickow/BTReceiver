@@ -83,11 +83,18 @@ public class BTReciever {
 						break;
 
 					case OPEN:
-
+						Motor.C.rotate(40);
+						
+						dos.writeInt(FINISHED);
+						
 						break;
 
 					case CLOSE:
-
+						
+						Motor.C.rotate(-40);
+						
+						dos.writeInt(FINISHED);
+						
 						break;
 
 					case DELIVER:
@@ -148,7 +155,9 @@ public class BTReciever {
 
 			Motor.B.rotate(-2 * ANGLE_CALIBRATION);
 		}
-
+//		Motor.A.rotate(-rightAngle*ANGLE_CALIBRATION, true);
+//		Motor.B.rotate(rightAngle*ANGLE_CALIBRATION);
+//		
 		dos.writeInt(FINISHED);
 	}
 
@@ -168,6 +177,9 @@ public class BTReciever {
 			Motor.B.rotate(2 * ANGLE_CALIBRATION);
 
 		}
+//		Motor.A.rotate(leftAngle*ANGLE_CALIBRATION,true);
+//		Motor.B.rotate(-leftAngle*ANGLE_CALIBRATION);
+//		
 		dos.writeInt(FINISHED);
 	}
 
