@@ -124,7 +124,7 @@ public class BTReciever {
 
 	private static synchronized void robotBackwards(DataInputStream dis)
 			throws IOException {
-		int backwardDistance = (int) (360 * dis.readInt());
+		int backwardDistance = (int) (dis.readInt());
 		Motor.A.rotate(backwardDistance, true);
 		Motor.B.rotate(backwardDistance);
 
@@ -133,9 +133,10 @@ public class BTReciever {
 
 	private static synchronized void robotForward(DataInputStream dis)
 			throws IOException {
-		int forwardDistance = (int) (360 * dis.readDouble());
-		Motor.A.rotate(-forwardDistance, true);
-		Motor.B.rotate(-forwardDistance);
+		int forwardDistance = (int) (dis.readDouble());
+		forwardDistance = forwardDistance < 1 ? 1: forwardDistance; 
+		Motor.A.rotate(-forwardDistance*360, true);
+		Motor.B.rotate(-forwardDistance*360);
 
 		dos.writeInt(FINISHED);
 	}
