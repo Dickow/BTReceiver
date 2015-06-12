@@ -8,6 +8,7 @@ import lejos.nxt.LCD;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.Motor;
+import lejos.util.PilotProps;
 
 public class BTReciever {
 	private static DataOutputStream dos;
@@ -84,17 +85,17 @@ public class BTReciever {
 
 					case OPEN:
 						Motor.C.rotate(40);
-						
+
 						dos.writeInt(FINISHED);
-						
+
 						break;
 
 					case CLOSE:
-						
+
 						Motor.C.rotate(-40);
-						
+
 						dos.writeInt(FINISHED);
-						
+
 						break;
 
 					case DELIVER:
@@ -134,10 +135,11 @@ public class BTReciever {
 	private static synchronized void robotForward(DataInputStream dis)
 			throws IOException {
 		int forwardDistance = (int) (dis.readDouble());
-		forwardDistance = forwardDistance < 1 ? 1: forwardDistance; 
-		Motor.A.rotate(-forwardDistance*360, true);
-		Motor.B.rotate(-forwardDistance*360);
-
+		forwardDistance = forwardDistance < 1 ? 1 : forwardDistance;
+		
+		Motor.A.rotate(-forwardDistance, true);
+		Motor.B.rotate(-forwardDistance);
+		
 		dos.writeInt(FINISHED);
 	}
 
@@ -147,18 +149,20 @@ public class BTReciever {
 		if (rightAngle == 0) {
 			rightAngle = 1;
 		}
-		if (rightAngle >= 30) {
+		if (rightAngle >= 15) {
 			Motor.A.rotate(rightAngle / 2 * ANGLE_CALIBRATION, true);
 			Motor.B.rotate((-rightAngle / 2) * ANGLE_CALIBRATION);
 
-		} else {
+		} else if (rightAngle >= 10) {
 			Motor.A.rotate(2 * ANGLE_CALIBRATION, true);
-
 			Motor.B.rotate(-2 * ANGLE_CALIBRATION);
+		} else {
+			Motor.A.rotate(1 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(-1 * ANGLE_CALIBRATION);
 		}
-//		Motor.A.rotate(-rightAngle*ANGLE_CALIBRATION, true);
-//		Motor.B.rotate(rightAngle*ANGLE_CALIBRATION);
-//		
+		// Motor.A.rotate(-rightAngle*ANGLE_CALIBRATION, true);
+		// Motor.B.rotate(rightAngle*ANGLE_CALIBRATION);
+		//
 		dos.writeInt(FINISHED);
 	}
 
@@ -168,19 +172,20 @@ public class BTReciever {
 		if (leftAngle == 0) {
 			leftAngle = 1;
 		}
-		if (leftAngle >= 30) {
+		if (leftAngle >= 15) {
 			Motor.A.rotate((-leftAngle / 2) * ANGLE_CALIBRATION, true);
-			;
 			Motor.B.rotate(leftAngle / 2 * ANGLE_CALIBRATION);
+		} else if (leftAngle >= 10) {
+			Motor.A.rotate(-3 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(3 * ANGLE_CALIBRATION);
+
 		} else {
-			Motor.A.rotate(-2 * ANGLE_CALIBRATION, true);
-
-			Motor.B.rotate(2 * ANGLE_CALIBRATION);
-
+			Motor.A.rotate(-1 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(1 * ANGLE_CALIBRATION);
 		}
-//		Motor.A.rotate(leftAngle*ANGLE_CALIBRATION,true);
-//		Motor.B.rotate(-leftAngle*ANGLE_CALIBRATION);
-//		
+		// Motor.A.rotate(leftAngle*ANGLE_CALIBRATION,true);
+		// Motor.B.rotate(-leftAngle*ANGLE_CALIBRATION);
+		//
 		dos.writeInt(FINISHED);
 	}
 
