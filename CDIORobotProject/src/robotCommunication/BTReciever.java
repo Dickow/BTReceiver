@@ -8,7 +8,6 @@ import lejos.nxt.LCD;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.Motor;
-import lejos.util.PilotProps;
 
 public class BTReciever {
 	private static DataOutputStream dos;
@@ -16,13 +15,10 @@ public class BTReciever {
 			FORWARD = 3, BACKWARDS = 4, STOP = 5, OPEN = 6, CLOSE = 7,
 			DELIVER = 8, CALIBRATE = 9, FINISHED = 10;
 	private static final int ANGLE_CALIBRATION = 4;
-	private static final int MOTORSPEED = 50;
 
 	public static void main(String[] args) throws Exception {
 		String connected = "Connected";
-		String waiting = "Waiting...";
 		String closing = "Closing...";
-		String excecuting = "Excecuting";
 		String test = "Test";
 
 		while (true) {
@@ -99,6 +95,16 @@ public class BTReciever {
 						break;
 
 					case DELIVER:
+						// do the delivery routine
+						Motor.A.rotate(10, true);
+						Motor.B.rotate(10, true);
+						Motor.C.rotate(40);
+
+						// tell the computer that we executed the command
+						dos.writeInt(FINISHED);
+						// close the arms again afterwards, we make sure to open
+						// them at another time
+						Motor.C.rotate(-40);
 
 						break;
 
@@ -126,6 +132,8 @@ public class BTReciever {
 	private static synchronized void robotBackwards(DataInputStream dis)
 			throws IOException {
 		int backwardDistance = (int) (dis.readInt());
+		backwardDistance = backwardDistance < 1 ? 1 : backwardDistance;
+
 		Motor.A.rotate(backwardDistance, true);
 		Motor.B.rotate(backwardDistance);
 
@@ -136,10 +144,10 @@ public class BTReciever {
 			throws IOException {
 		int forwardDistance = (int) (dis.readDouble());
 		forwardDistance = forwardDistance < 1 ? 1 : forwardDistance;
-		
+
 		Motor.A.rotate(-forwardDistance, true);
 		Motor.B.rotate(-forwardDistance);
-		
+
 		dos.writeInt(FINISHED);
 	}
 
@@ -154,15 +162,13 @@ public class BTReciever {
 			Motor.B.rotate((-rightAngle / 2) * ANGLE_CALIBRATION);
 
 		} else if (rightAngle >= 10) {
-			Motor.A.rotate(2 * ANGLE_CALIBRATION, true);
-			Motor.B.rotate(-2 * ANGLE_CALIBRATION);
+			Motor.A.rotate(3 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(-3 * ANGLE_CALIBRATION);
 		} else {
 			Motor.A.rotate(1 * ANGLE_CALIBRATION, true);
 			Motor.B.rotate(-1 * ANGLE_CALIBRATION);
 		}
-		// Motor.A.rotate(-rightAngle*ANGLE_CALIBRATION, true);
-		// Motor.B.rotate(rightAngle*ANGLE_CALIBRATION);
-		//
+
 		dos.writeInt(FINISHED);
 	}
 
@@ -183,9 +189,6 @@ public class BTReciever {
 			Motor.A.rotate(-1 * ANGLE_CALIBRATION, true);
 			Motor.B.rotate(1 * ANGLE_CALIBRATION);
 		}
-		// Motor.A.rotate(leftAngle*ANGLE_CALIBRATION,true);
-		// Motor.B.rotate(-leftAngle*ANGLE_CALIBRATION);
-		//
 		dos.writeInt(FINISHED);
 	}
 
