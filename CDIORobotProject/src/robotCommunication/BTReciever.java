@@ -96,8 +96,6 @@ public class BTReciever {
 
 					case DELIVER:
 						// do the delivery routine
-						Motor.A.rotate(2, true);
-						Motor.B.rotate(2, true);
 						Motor.C.rotate(80);
 
 						// tell the computer that we executed the command
