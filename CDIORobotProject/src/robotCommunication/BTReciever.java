@@ -95,6 +95,9 @@ public class BTReciever {
 						break;
 
 					case DELIVER:
+
+						Motor.A.rotate(4, true);
+						Motor.B.rotate(4, true);
 						// do the delivery routine
 						Motor.C.rotate(80);
 
