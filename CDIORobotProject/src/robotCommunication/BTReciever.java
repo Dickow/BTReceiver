@@ -96,10 +96,11 @@ public class BTReciever {
 
 					case DELIVER:
 
-						Motor.A.rotate(4, true);
-						Motor.B.rotate(4, true);
-						// do the delivery routine
 						Motor.C.rotate(80);
+
+						Motor.A.rotate(-15, true);
+						Motor.B.rotate(-15);
+						// do the delivery routine
 
 						// tell the computer that we executed the command
 						// close the arms again afterwards, we make sure to open
