@@ -98,8 +98,8 @@ public class BTReciever {
 
 						Motor.C.rotate(100, true);
 
-						Motor.A.rotate(-50, true);
-						Motor.B.rotate(-50);
+						Motor.A.rotate(-150, true);
+						Motor.B.rotate(-150);
 						// do the delivery routine
 
 						// tell the computer that we executed the command
