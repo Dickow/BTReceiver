@@ -195,6 +195,7 @@ public class BTReciever {
 			Motor.B.rotate(1 * ANGLE_CALIBRATION);
 		}
 
+		dos.writeInt(FINISHED);
 	}
 
 }
