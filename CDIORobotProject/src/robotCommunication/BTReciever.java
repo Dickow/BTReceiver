@@ -98,12 +98,12 @@ public class BTReciever {
 
 						Motor.C.rotate(100, true);
 
-						Motor.A.rotate(-150, true);
-						Motor.B.rotate(-150);
+						Motor.A.rotate(150, true);
+						Motor.B.rotate(150);
 						// do the delivery routine
 
-						Motor.A.rotate(180, true);
-						Motor.B.rotate(180);
+						Motor.A.rotate(-180, true);
+						Motor.B.rotate(-180);
 						// tell the computer that we executed the command
 						// close the arms again afterwards, we make sure to open
 						// them at another time
@@ -189,7 +189,7 @@ public class BTReciever {
 		} else if (leftAngle >= 10) {
 			Motor.A.rotate(-3 * ANGLE_CALIBRATION, true);
 			Motor.B.rotate(3 * ANGLE_CALIBRATION);
-
+			
 		} else {
 			Motor.A.rotate(-1 * ANGLE_CALIBRATION, true);
 			Motor.B.rotate(1 * ANGLE_CALIBRATION);
