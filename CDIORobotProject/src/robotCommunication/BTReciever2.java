@@ -46,7 +46,7 @@ public class BTReciever2 {
 					else
 						Motor.B.backward();
 
-					Motor.C.rotate((int) motorCAngle, true);
+					Motor.C.rotate((int) motorCAngle);
 					dos.writeInt(FINISHED);
 					dos.flush();
 

@@ -15,8 +15,6 @@ public class BTReciever {
 			FORWARD = 3, BACKWARDS = 4, STOP = 5, OPEN = 6, CLOSE = 7,
 			DELIVER = 8, CALIBRATE = 9, FINISHED = 10;
 	private static final int ANGLE_CALIBRATION = 4;
-	private static final int SPEED = 50;
-	private static final double KP = 0.3f;
 
 	public static void main(String[] args) throws Exception {
 		String connected = "Connected";
@@ -103,8 +101,8 @@ public class BTReciever {
 						Motor.A.rotate(-150, true);
 						Motor.B.rotate(-150);
 						// do the delivery routine
-						
-						Motor.A.rotate(180,true);
+
+						Motor.A.rotate(180, true);
 						Motor.B.rotate(180);
 						// tell the computer that we executed the command
 						// close the arms again afterwards, we make sure to open
@@ -115,8 +113,8 @@ public class BTReciever {
 
 					case CALIBRATE:
 						// TODO
-						Motor.A.rotate(-360, true);
-						Motor.B.rotate(-360);
+						Motor.A.rotate(360, true);
+						Motor.B.rotate(360);
 
 						dos.writeInt(FINISHED);
 						break;
@@ -139,8 +137,8 @@ public class BTReciever {
 		int backwardDistance = (int) (dis.readInt());
 		backwardDistance = backwardDistance < 1 ? 1 : backwardDistance;
 
-		Motor.A.rotate(backwardDistance, true);
-		Motor.B.rotate(backwardDistance);
+		Motor.A.rotate(-backwardDistance, true);
+		Motor.B.rotate(-backwardDistance);
 
 		dos.writeInt(FINISHED);
 	}
@@ -149,67 +147,54 @@ public class BTReciever {
 			throws IOException {
 		int forwardDistance = (int) (dis.readDouble());
 		forwardDistance = forwardDistance < 1 ? 1 : forwardDistance;
-		
-		Motor.A.rotate(-forwardDistance, true);
-		Motor.B.rotate(-forwardDistance);
+
+		Motor.A.rotate(forwardDistance, true);
+		Motor.B.rotate(forwardDistance);
 
 		dos.writeInt(FINISHED);
 	}
 
 	private static synchronized void turnRight(DataInputStream dis)
 			throws IOException {
-		double rightAngle = dis.readDouble();
-		double pGain = KP*rightAngle;
-//		if (rightAngle == 0) {
-//			rightAngle = 1;
-//		}
-//		if (rightAngle >= 15) {s
-		
-//			Motor.A.rotate(rightAngle / 2 * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate((-rightAngle / 2) * ANGLE_CALIBRATION);
-//
-//		} else if (rightAngle >= 10) {
-//			Motor.A.rotate(3 * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate(-3 * ANGLE_CALIBRATION);
-//		} else {
-//			Motor.A.rotate(1 * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate(-1 * ANGLE_CALIBRATION);
-//		}
-		
-		
-		Motor.A.setSpeed((float)(SPEED + pGain));
-		Motor.B.setSpeed((float)(SPEED - pGain));
-		Motor.A.forward();
-		Motor.B.forward();
-		
+
+		int rightAngle = dis.readInt();
+		if (rightAngle == 0) {
+			rightAngle = 1;
+		}
+		if (rightAngle >= 15) {
+
+			Motor.A.rotate(rightAngle / 2 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate((-rightAngle / 2) * ANGLE_CALIBRATION);
+
+		} else if (rightAngle >= 10) {
+			Motor.A.rotate(3 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(-3 * ANGLE_CALIBRATION);
+		} else {
+			Motor.A.rotate(1 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(-1 * ANGLE_CALIBRATION);
+		}
 
 		dos.writeInt(FINISHED);
 	}
 
 	private static synchronized void turnLeft(DataInputStream dis)
 			throws IOException {
-		double rightAngle = dis.readDouble();
-		double pGain = KP*rightAngle;
-//		if (leftAngle == 0) {
-//			leftAngle = 1;
-//		}
-//		if (leftAngle >= 15) {
-//			Motor.A.rotate((-leftAngle / 2) * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate(leftAngle / 2 * ANGLE_CALIBRATION);
-//		} else if (leftAngle >= 10) {
-//			Motor.A.rotate(-3 * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate(3 * ANGLE_CALIBRATION);
-//
-//		} else {
-//			Motor.A.rotate(-1 * ANGLE_CALIBRATION, true);
-//			Motor.B.rotate(1 * ANGLE_CALIBRATION);
-//		}
-		
-		Motor.A.setSpeed((float)(SPEED - pGain));
-		Motor.B.setSpeed((float)(SPEED + pGain));
-		Motor.A.forward();
-		Motor.B.forward();
-		dos.writeInt(FINISHED);
+		int leftAngle = dis.readInt();
+		if (leftAngle == 0) {
+			leftAngle = 1;
+		}
+		if (leftAngle >= 15) {
+			Motor.A.rotate((-leftAngle / 2) * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(leftAngle / 2 * ANGLE_CALIBRATION);
+		} else if (leftAngle >= 10) {
+			Motor.A.rotate(-3 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(3 * ANGLE_CALIBRATION);
+
+		} else {
+			Motor.A.rotate(-1 * ANGLE_CALIBRATION, true);
+			Motor.B.rotate(1 * ANGLE_CALIBRATION);
+		}
+
 	}
 
 }
