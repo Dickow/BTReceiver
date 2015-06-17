@@ -147,7 +147,8 @@ public class BTReciever {
 			throws IOException {
 		int forwardDistance = (int) (dis.readDouble());
 		forwardDistance = forwardDistance < 1 ? 1 : forwardDistance;
-
+		
+		
 		Motor.A.rotate(forwardDistance, true);
 		Motor.B.rotate(forwardDistance);
 
