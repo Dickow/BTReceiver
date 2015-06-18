@@ -49,7 +49,7 @@ public class BTReciever2 {
 
 						Motor.A.backward();
 						Motor.B.forward();
-						
+
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
@@ -74,10 +74,18 @@ public class BTReciever2 {
 
 						Motor.A.setSpeed((float) motorASpeed);
 						Motor.B.setSpeed((float) motorBSpeed);
-						
-						Motor.A.forward();
-						Motor.B.forward();
-						
+						if (motorASpeed < 0) {
+							Motor.A.backward();
+						} else {
+							Motor.A.forward();
+						}
+
+						if (motorBSpeed < 0) {
+							Motor.B.backward();
+						} else {
+							Motor.B.forward();
+						}
+
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
@@ -105,10 +113,10 @@ public class BTReciever2 {
 						break;
 
 					case CLOSE:
-						
+
 						Motor.A.stop(true);
 						Motor.B.stop();
-						
+
 						Motor.C.rotate(-40);
 
 						dos.writeInt(FINISHED);
@@ -116,8 +124,7 @@ public class BTReciever2 {
 						break;
 
 					case DELIVER:
-						
-						
+
 						Motor.A.stop(true);
 						Motor.B.stop();
 						Motor.C.rotate(100, true);
@@ -146,7 +153,6 @@ public class BTReciever2 {
 						break;
 					}
 					// we are done so write that back to the program
-					
 
 				} catch (Exception e) {
 					LCD.drawString("Error happend", 1, 1);
