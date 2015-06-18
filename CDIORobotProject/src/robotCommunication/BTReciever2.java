@@ -133,8 +133,8 @@ public class BTReciever2 {
 						Motor.B.rotate(150);
 						// do the delivery routine
 
-						Motor.A.rotate(-180, true);
-						Motor.B.rotate(-180);
+						Motor.A.rotate(-360, true);
+						Motor.B.rotate(-360);
 						// tell the computer that we executed the command
 						// close the arms again afterwards, we make sure to open
 						// them at another time
