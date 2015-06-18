@@ -80,7 +80,7 @@ public class BTReciever {
 						break;
 
 					case OPEN:
-						Motor.C.rotate(40);
+						Motor.C.rotate(60);
 
 						dos.writeInt(FINISHED);
 
@@ -88,7 +88,7 @@ public class BTReciever {
 
 					case CLOSE:
 
-						Motor.C.rotate(-40);
+						Motor.C.rotate(-60);
 
 						dos.writeInt(FINISHED);
 

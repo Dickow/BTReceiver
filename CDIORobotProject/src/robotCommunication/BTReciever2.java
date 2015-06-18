@@ -19,7 +19,6 @@ public class BTReciever2 {
 
 		double motorASpeed;
 		double motorBSpeed;
-		double motorCAngle;
 		while (true) {
 
 			BTConnection btc = Bluetooth.waitForConnection();
@@ -48,9 +47,11 @@ public class BTReciever2 {
 						Motor.A.setSpeed((float) motorASpeed);
 						Motor.B.setSpeed((float) motorBSpeed);
 
-						Motor.A.forward();
-						Motor.B.backward();
-
+						Motor.A.backward();
+						Motor.B.forward();
+						
+						dos.writeInt(FINISHED);
+						dos.flush();
 						break;
 
 					case TURNRIGHT:
@@ -60,34 +61,25 @@ public class BTReciever2 {
 						Motor.A.setSpeed((float) motorASpeed);
 						Motor.B.setSpeed((float) motorBSpeed);
 
-						Motor.A.backward();
-						Motor.B.forward();
+						Motor.A.forward();
+						Motor.B.backward();
+						dos.writeInt(FINISHED);
+						dos.flush();
 						break;
 
 					case FORWARD:
 
 						motorASpeed = dis.readDouble();
 						motorBSpeed = dis.readDouble();
-						motorCAngle = dis.readDouble();
-						if (motorASpeed == -1 || motorBSpeed == -1
-								|| motorCAngle == -1) {
-							continue;
-						}
 
 						Motor.A.setSpeed((float) motorASpeed);
 						Motor.B.setSpeed((float) motorBSpeed);
-						if (motorASpeed < 0.0)
-							Motor.A.forward();
-						else
-							Motor.A.backward();
-						if (motorBSpeed < 0.0)
-							Motor.B.forward();
-						else
-							Motor.B.backward();
-
-						Motor.C.rotate((int) motorCAngle);
+						
+						Motor.A.forward();
+						Motor.B.forward();
+						
 						dos.writeInt(FINISHED);
-
+						dos.flush();
 						break;
 
 					case BACKWARDS:
@@ -98,8 +90,8 @@ public class BTReciever2 {
 
 						Motor.A.stop(true);
 						Motor.B.stop();
-
 						dos.writeInt(FINISHED);
+						dos.flush();
 						break;
 
 					case OPEN:
@@ -109,7 +101,7 @@ public class BTReciever2 {
 						Motor.C.rotate(40);
 
 						dos.writeInt(FINISHED);
-
+						dos.flush();
 						break;
 
 					case CLOSE:
@@ -120,11 +112,14 @@ public class BTReciever2 {
 						Motor.C.rotate(-40);
 
 						dos.writeInt(FINISHED);
-
+						dos.flush();
 						break;
 
 					case DELIVER:
-
+						
+						
+						Motor.A.stop(true);
+						Motor.B.stop();
 						Motor.C.rotate(100, true);
 
 						Motor.A.rotate(150, true);
@@ -138,6 +133,7 @@ public class BTReciever2 {
 						// them at another time
 						Motor.C.rotate(-100);
 						dos.writeInt(FINISHED);
+						dos.flush();
 						break;
 
 					case CALIBRATE:
@@ -146,10 +142,11 @@ public class BTReciever2 {
 						Motor.B.rotate(360);
 
 						dos.writeInt(FINISHED);
+						dos.flush();
 						break;
 					}
 					// we are done so write that back to the program
-					dos.flush();
+					
 
 				} catch (Exception e) {
 					LCD.drawString("Error happend", 1, 1);
