@@ -4,7 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import lejos.nxt.LCD;
+import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
+import lejos.nxt.SensorPort;
+import lejos.nxt.UltrasonicSensor;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 
@@ -13,10 +16,13 @@ public class BTReciever2 {
 	private static DataOutputStream dos;
 	private static final int QUIT = -2, TURNLEFT = 1, TURNRIGHT = 2,
 			FORWARD = 3, BACKWARDS = 4, STOP = 5, OPEN = 6, CLOSE = 7,
-			DELIVER = 8, CALIBRATE = 9, FINISHED = 10;
+			DELIVER = 8, CALIBRATE = 9, FINISHED = 10, HASBALL = 11,
+			GOTBALL = 12, NOBALL = 13;
+	private static int initialAngle, openAngle, deliverAngle;
 
 	public static void main(String[] args) {
 
+		UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
 		double motorASpeed;
 		double motorBSpeed;
 		while (true) {
@@ -25,10 +31,13 @@ public class BTReciever2 {
 
 			DataInputStream dis = btc.openDataInputStream();
 			dos = btc.openDataOutputStream();
-
+			initialAngle = Motor.C.getPosition();
+			openAngle = initialAngle + 40;
+			deliverAngle = initialAngle + 100;
 			while (true) {
 				try {
 					int n = dis.readInt();
+					int currentAngle = Motor.C.getPosition();
 					switch (n) {
 					case QUIT:
 						dis.close();
@@ -76,11 +85,13 @@ public class BTReciever2 {
 						Motor.B.setSpeed((float) motorBSpeed);
 						if (motorASpeed < 0) {
 							Motor.A.backward();
+							Motor.A.setSpeed((float) -motorASpeed);
 						} else {
 							Motor.A.forward();
 						}
 
 						if (motorBSpeed < 0) {
+							Motor.B.setSpeed((float) -motorBSpeed);
 							Motor.B.backward();
 						} else {
 							Motor.B.forward();
@@ -106,7 +117,8 @@ public class BTReciever2 {
 
 						Motor.A.stop(true);
 						Motor.B.stop();
-						Motor.C.rotate(40);
+
+						Motor.C.rotate(openAngle - currentAngle);
 
 						dos.writeInt(FINISHED);
 						dos.flush();
@@ -116,18 +128,38 @@ public class BTReciever2 {
 
 						Motor.A.stop(true);
 						Motor.B.stop();
-
-						Motor.C.rotate(-40);
-
+						// close the arms
+						Motor.C.rotate(initialAngle - currentAngle);
+						
+						// go back a little
+						Motor.A.rotate(-180, true);
+						Motor.B.rotate(-180);
+						
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
 
+					case HASBALL:
+						int value = sensor.getDistance();
+						Thread.sleep(10L);
+						// say we are finished and then write the value to the
+						// connector.
+						dos.writeInt(FINISHED);
+						// if the distance is less or equal to 8 then we have a
+						// ball
+						if (value <= 9) {
+							dos.writeInt(GOTBALL);
+						} else {
+							dos.writeInt(NOBALL);
+						}
+						dos.flush();
+
+						break;
 					case DELIVER:
 
 						Motor.A.stop(true);
 						Motor.B.stop();
-						Motor.C.rotate(100, true);
+						Motor.C.rotate(deliverAngle - currentAngle, true);
 
 						Motor.A.rotate(150, true);
 						Motor.B.rotate(150);
@@ -138,7 +170,7 @@ public class BTReciever2 {
 						// tell the computer that we executed the command
 						// close the arms again afterwards, we make sure to open
 						// them at another time
-						Motor.C.rotate(-100);
+						Motor.C.rotate(initialAngle - currentAngle);
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
