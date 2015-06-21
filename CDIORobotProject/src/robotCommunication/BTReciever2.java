@@ -130,18 +130,20 @@ public class BTReciever2 {
 						Motor.B.stop();
 						// close the arms
 						Motor.C.rotate(initialAngle - currentAngle);
-						
+
 						// go back a little
-						Motor.A.rotate(-180, true);
-						Motor.B.rotate(-180);
-						
+						Motor.A.rotate(-260, true);
+						Motor.B.rotate(-260);
+
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
 
 					case HASBALL:
+
 						int value = sensor.getDistance();
-						Thread.sleep(10L);
+						Thread.sleep(40L);
+
 						// say we are finished and then write the value to the
 						// connector.
 						dos.writeInt(FINISHED);
@@ -193,5 +195,13 @@ public class BTReciever2 {
 			}
 		}
 
+	}
+
+	private static int sum(int[] values) {
+		int sum = 0;
+		for (int i : values) {
+			sum += i;
+		}
+		return sum;
 	}
 }
