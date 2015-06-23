@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import lejos.nxt.LCD;
-import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
@@ -14,10 +13,9 @@ import lejos.nxt.comm.Bluetooth;
 public class BTReciever2 {
 
 	private static DataOutputStream dos;
-	private static final int QUIT = -2, TURNLEFT = 1, TURNRIGHT = 2,
-			FORWARD = 3, BACKWARDS = 4, STOP = 5, OPEN = 6, CLOSE = 7,
-			DELIVER = 8, CALIBRATE = 9, FINISHED = 10, HASBALL = 11,
-			GOTBALL = 12, NOBALL = 13;
+	private static final int QUIT = -2, FORWARD = 3, STOP = 5, OPEN = 6,
+			CLOSE = 7, DELIVER = 8, FINISHED = 10, HASBALL = 11, GOTBALL = 12,
+			NOBALL = 13;
 	private static int initialAngle, openAngle, deliverAngle;
 
 	public static void main(String[] args) {
@@ -48,33 +46,6 @@ public class BTReciever2 {
 						btc.close();
 						LCD.clear();
 						break;
-					case TURNLEFT:
-
-						motorASpeed = dis.readDouble();
-						motorBSpeed = dis.readDouble();
-
-						Motor.A.setSpeed((float) motorASpeed);
-						Motor.B.setSpeed((float) motorBSpeed);
-
-						Motor.A.backward();
-						Motor.B.forward();
-
-						dos.writeInt(FINISHED);
-						dos.flush();
-						break;
-
-					case TURNRIGHT:
-						motorASpeed = dis.readDouble();
-						motorBSpeed = dis.readDouble();
-
-						Motor.A.setSpeed((float) motorASpeed);
-						Motor.B.setSpeed((float) motorBSpeed);
-
-						Motor.A.forward();
-						Motor.B.backward();
-						dos.writeInt(FINISHED);
-						dos.flush();
-						break;
 
 					case FORWARD:
 
@@ -99,10 +70,6 @@ public class BTReciever2 {
 
 						dos.writeInt(FINISHED);
 						dos.flush();
-						break;
-
-					case BACKWARDS:
-
 						break;
 
 					case STOP:
@@ -138,7 +105,11 @@ public class BTReciever2 {
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
-
+					/*
+					 * This did not acctually work at the contest, but it worked
+					 * well during the testing. It was removed during the
+					 * contest to get a better result. TODO
+					 */
 					case HASBALL:
 
 						int value = sensor.getDistance();
@@ -176,15 +147,6 @@ public class BTReciever2 {
 						dos.writeInt(FINISHED);
 						dos.flush();
 						break;
-
-					case CALIBRATE:
-						// TODO
-						Motor.A.rotate(360, true);
-						Motor.B.rotate(360);
-
-						dos.writeInt(FINISHED);
-						dos.flush();
-						break;
 					}
 					// we are done so write that back to the program
 
@@ -197,11 +159,4 @@ public class BTReciever2 {
 
 	}
 
-	private static int sum(int[] values) {
-		int sum = 0;
-		for (int i : values) {
-			sum += i;
-		}
-		return sum;
-	}
 }
